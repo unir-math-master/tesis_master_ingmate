@@ -9,3 +9,7 @@ Below are some facts related to printing the hardware components.
 * Material used:  <  grams
 * Material cost:  ~ $
 
+
+## Author
+
+* **Jorge Balsells** - [GitHub](https://github.com/JBalsells)

@@ -11,6 +11,7 @@ Install pip
 #### Raspberry Pi Camera Module V2
 
 https://github.com/JetsonHacksNano/CSI-Camera
+
 `gst-launch-1.0 nvarguscamerasrc ! nvoverlaysink`
 
 #### OLED Screen

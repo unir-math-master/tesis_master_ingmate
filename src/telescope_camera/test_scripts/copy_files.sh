@@ -1,0 +1,1 @@
+scp *.jpeg *.mp4 erick@192.168.3.10:/home/erick/Documents/telescope-data

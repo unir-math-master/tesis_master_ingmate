@@ -12,6 +12,7 @@ def get_config():
     yaml_config = open(config_file, 'r')
     return yaml.load(yaml_config)
 
+
 def node():
     rospy.init_node("gps_node_publisher")
     config = get_config()
@@ -29,11 +30,12 @@ def node():
         publisher.publish(gps_data)
         ros_rate.sleep()
 
+
 def main():
     try:
         node()
     except rospy.ROSException:
-        rospy.logerr("An error ocurred while trying to excecute GPS")
+        rospy.logerr("An error occurred while trying to execute GPS")
 
 
 main()

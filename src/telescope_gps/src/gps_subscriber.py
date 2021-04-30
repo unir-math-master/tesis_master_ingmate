@@ -4,11 +4,12 @@ from std_msgs.msg import String
 
 
 def gps_callback(response):
-    rospy.logininfo(f"GPS DATA: {response.data}")
+    rospy.loginfo(f"GPS DATA: {response.data}")
 
 
 def node():
     rospy.init_node("gps_subscriber")
+    rospy.loginfo("GPS Subscriber started ....... [OK]")
     rospy.Subscriber('gpsdata', String, gps_callback)
 
     rospy.spin()

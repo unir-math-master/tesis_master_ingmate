@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="MariaDb" id="Project_374" database="MariaDb" >
+	<schema name="unir_ingmate" >
+		<table name="api" generator_rows="150" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_test" type="int" jt="4" unsigned="y" />
+			<column name="name" prior="api" type="varchar" length="50" jt="12" mandatory="y" />
+			<index name="pk_api_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_api_api" unique="UNIQUE_KEY" >
+				<column name="name" />
+			</index>
+			<fk name="fk_api_test" to_schema="unir_ingmate" to_table="test" >
+				<fk_column name="id_test" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="data" generator_rows="225" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_api" type="int" jt="4" unsigned="y" />
+			<column name="azimuth" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="elevation" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="type" type="enum" jt="12" >
+				<enumeration><![CDATA['real', 'geometric']]></enumeration>
+			</column>
+			<column name="created_at" type="timestamp" jt="93" />
+			<index name="pk_data_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_data_api" to_schema="unir_ingmate" to_table="api" >
+				<fk_column name="id_api" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="image" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_test" type="int" jt="4" unsigned="y" />
+			<column name="name" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="route" type="varchar" length="200" jt="12" mandatory="y" />
+			<column name="width" type="int" jt="4" mandatory="y" />
+			<column name="height" type="int" jt="4" mandatory="y" />
+			<column name="flip_method" type="int" jt="4" />
+			<column name="framerate" type="int" jt="4" />
+			<column name="created_at" type="timestamp" jt="93" />
+			<index name="pk_image_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_image_test" to_schema="unir_ingmate" to_table="test" >
+				<fk_column name="id_test" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="number_of_steps" generator_rows="225" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_steps" type="int" jt="4" unsigned="y" />
+			<column name="step" type="int" jt="4" />
+			<column name="created_at" type="timestamp" jt="93" />
+			<index name="pk_number_of_steps_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_number_of_steps_steps" to_schema="unir_ingmate" to_table="steps" >
+				<fk_column name="id_steps" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="position" prior="gps" generator_rows="150" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_test" type="int" jt="4" unsigned="y" />
+			<column name="type" type="enum" jt="12" mandatory="y" >
+				<enumeration><![CDATA['gps','e_api']]></enumeration>
+			</column>
+			<column name="sat_number" type="varchar" length="3" jt="12" />
+			<column name="latitude" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="longitude" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="altitude" type="varchar" length="20" jt="12" mandatory="y" />
+			<column name="created_at" type="timestamp" jt="93" />
+			<index name="pk_gps_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_position_test" to_schema="unir_ingmate" to_table="test" >
+				<fk_column name="id_test" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="sensor" prior="mpu6050" generator_rows="150" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_test" type="int" jt="4" unsigned="y" />
+			<column name="code" prior="sensor" type="varchar" length="50" jt="12" mandatory="y" />
+			<index name="pk_sensor_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_sensor_test" to_schema="unir_ingmate" to_table="test" >
+				<fk_column name="id_test" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="steps" generator_rows="150" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_test" type="int" jt="4" unsigned="y" />
+			<column name="axis" prior="motor" type="enum" jt="12" mandatory="y" >
+				<enumeration><![CDATA['azimuth','elevation']]></enumeration>
+			</column>
+			<index name="pk_steps_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_steps_test" to_schema="unir_ingmate" to_table="test" >
+				<fk_column name="id_test" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="test" prior="medition" generator_rows="100" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="telescope" type="varchar" length="30" jt="12" />
+			<column name="tracking_object" prior="observation" type="varchar" length="100" jt="12" />
+			<column name="created_at" type="timestamp" jt="93" />
+			<index name="pk_medition_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="value" prior="valor" generator_rows="225" >
+			<column name="id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="id_sensor" type="int" jt="4" mandatory="y" unsigned="y" />
+			<column name="axis" type="varchar" length="1" jt="12" />
+			<column name="medition" prior="value" type="varchar" length="15" jt="12" mandatory="y" />
+			<column name="created_at" type="timestamp" jt="93" />
+			<index name="pk_valor_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_valor_sensor" to_schema="unir_ingmate" to_table="sensor" >
+				<fk_column name="id_sensor" pk="id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+	</schema>
+	<connector name="MariaDb" database="MariaDb" driver_class="org.mariadb.jdbc.Driver" driver_jar="mariadb-java-client-2.7.2.jar" driver_desc="Standard" host="localhost" port="3306" user="jbalsells" passwd="VWpicDU4YzIyODg5IQ==" />
+	<layout name="Main Layout" id="Layout_1ed2" show_relation="columns" >
+		<comment><![CDATA[MariaDb]]></comment>
+		<entity schema="unir_ingmate" name="api" color="C1D8EE" x="416" y="368" />
+		<entity schema="unir_ingmate" name="data" color="C1D8EE" x="400" y="512" />
+		<entity schema="unir_ingmate" name="image" color="C1D8EE" x="896" y="368" />
+		<entity schema="unir_ingmate" name="number_of_steps" color="C1D8EE" x="560" y="512" />
+		<entity schema="unir_ingmate" name="position" color="C1D8EE" x="736" y="368" />
+		<entity schema="unir_ingmate" name="sensor" color="C1D8EE" x="256" y="368" />
+		<entity schema="unir_ingmate" name="steps" color="C1D8EE" x="576" y="368" />
+		<entity schema="unir_ingmate" name="test" color="C1D8EE" x="560" y="224" />
+		<entity schema="unir_ingmate" name="value" color="C1D8EE" x="240" y="512" />
+		<callout x="48" y="48" pointer="Round" >
+			<comment><![CDATA[Create new tables by right-clicking the layout (diagram).
+Create multiple layouts with the same or different tables.
+Saving the model to file will also save the layouts and schema structure.]]></comment>
+		</callout>
+		<script name="SQL_Editor" id="Editor_23d6" language="SQL" >
+			<string><![CDATA[CREATE SCHEMA unir_ingmate;
+
+CREATE TABLE unir_ingmate.test ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	telescope            varchar(30)      ,
+	created_at           timestamp      
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.api ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	name                 varchar(50)  NOT NULL    ,
+	CONSTRAINT unq_api_api UNIQUE ( name ) ,
+	CONSTRAINT fk_api_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.data ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_api               int UNSIGNED     ,
+	azimuth              varchar(20)  NOT NULL    ,
+	elevation            varchar(20)  NOT NULL    ,
+	`type`               enum('real', 'geometric')      ,
+	created_at           timestamp      ,
+	CONSTRAINT fk_data_api FOREIGN KEY ( id_api ) REFERENCES unir_ingmate.api( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.position ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	latitude             varchar(20)  NOT NULL    ,
+	longitude            varchar(20)  NOT NULL    ,
+	altitude             varchar(20)      ,
+	created_at           timestamp      ,
+	CONSTRAINT fk_position_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.sensor ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	code                 varchar(50)  NOT NULL    ,
+	CONSTRAINT fk_sensor_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.steps ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	axis                 enum('azimuth','elevation')  NOT NULL    ,
+	CONSTRAINT fk_steps_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.value ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_sensor            int UNSIGNED NOT NULL    ,
+	axis                 varchar(1)      ,
+	medition             varchar(15)  NOT NULL    ,
+	created_at           timestamp      ,
+	CONSTRAINT fk_valor_sensor FOREIGN KEY ( id_sensor ) REFERENCES unir_ingmate.sensor( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.number_of_steps ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_steps             int UNSIGNED     ,
+	created_at           timestamp      ,
+	CONSTRAINT fk_number_of_steps_steps FOREIGN KEY ( id_steps ) REFERENCES unir_ingmate.steps( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+ ) engine=InnoDB;
+]]></string>
+		</script>
+		<script name="SQL_Editor_001" id="Editor_2f8" language="SQL" >
+			<string><![CDATA[CREATE SCHEMA unir_ingmate;
+
+CREATE TABLE unir_ingmate.test ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	telescope            varchar(30)      ,
+	tracking_object      varchar(100)      ,
+	created_at           timestamp      
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.api ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	name                 varchar(50)  NOT NULL    ,
+	CONSTRAINT unq_api_api UNIQUE ( name ) 
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.data ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_api               int UNSIGNED     ,
+	azimuth              varchar(20)  NOT NULL    ,
+	elevation            varchar(20)  NOT NULL    ,
+	`type`               enum('real', 'geometric')      ,
+	created_at           timestamp      
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.image ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	name                 varchar(100)  NOT NULL    ,
+	route                varchar(200)  NOT NULL    ,
+	width                int  NOT NULL    ,
+	height               int  NOT NULL    ,
+	flip_method          int      ,
+	framerate            int      ,
+	created_at           timestamp      
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.position ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	`type`               enum('gps','e_api')  NOT NULL    ,
+	sat_number           varchar(3)      ,
+	latitude             varchar(20)  NOT NULL    ,
+	longitude            varchar(20)  NOT NULL    ,
+	altitude             varchar(20)  NOT NULL    ,
+	created_at           timestamp      
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.sensor ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	code                 varchar(50)  NOT NULL    
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.steps ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int UNSIGNED     ,
+	axis                 enum('azimuth','elevation')  NOT NULL    
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.value ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_sensor            int UNSIGNED NOT NULL    ,
+	axis                 varchar(1)      ,
+	medition             varchar(15)  NOT NULL    ,
+	created_at           timestamp      
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.number_of_steps ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_steps             int UNSIGNED     ,
+	step                 int      ,
+	created_at           timestamp      
+ ) engine=InnoDB;
+
+ALTER TABLE unir_ingmate.api ADD CONSTRAINT fk_api_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.data ADD CONSTRAINT fk_data_api FOREIGN KEY ( id_api ) REFERENCES unir_ingmate.api( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.image ADD CONSTRAINT fk_image_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.number_of_steps ADD CONSTRAINT fk_number_of_steps_steps FOREIGN KEY ( id_steps ) REFERENCES unir_ingmate.steps( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.position ADD CONSTRAINT fk_position_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.sensor ADD CONSTRAINT fk_sensor_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.steps ADD CONSTRAINT fk_steps_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.value ADD CONSTRAINT fk_valor_sensor FOREIGN KEY ( id_sensor ) REFERENCES unir_ingmate.sensor( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+]]></string>
+		</script>
+	</layout>
+</project>

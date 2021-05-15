@@ -3,3 +3,5 @@ serial_port : "/dev/ttyUSB0"
 queue_size : 10
 # Rate en Hz for ros
 ros_rate : 3
+# Minimun number of sate lites
+satellites_number : 6

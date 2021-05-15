@@ -30,7 +30,7 @@ def main():
     try:
         node()
     except rospy.ROSException:
-        rospy.logerr("An error ocurred while trying to excecute GPS service")
+        rospy.logerr("An error occurred while trying to excecute GPS service")
 
 
 main()

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 import rospy
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge
+from cv_bridge import CvBridge, CvBridgeError
 import cv2
 from csi_camera import CSI_Camera
 
 def node():
     rospy.init_node("camera_node_publisher")
-    cvbridge=CvBridge()
+    cvbridge = CvBridge()
 
     rospy.loginfo("Starting Camera .....")
     camera = CSI_Camera()
@@ -16,8 +16,8 @@ def node():
     camera.start()
     rospy.loginfo("Camera  [OK]")
 
-    publisher=rospy.Publisher('cameraimg', Image, queue_size=10)
-    ros_rate=rospy.Rate(3)
+    publisher = rospy.Publisher('cameraimg', Image, queue_size=10)
+    ros_rate = rospy.Rate(3)
 
     while not rospy.is_shutdown():
         _, frame = camera.read()
@@ -36,6 +36,7 @@ def main():
     try:
         node()
     except rospy.ROSException:
-        rospy.logerr("An error ocurred while trying to excecute camera node")
+        rospy.logerr("An error occurred while trying to execute camera node")
+
 
 main()

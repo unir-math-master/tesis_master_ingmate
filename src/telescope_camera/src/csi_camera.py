@@ -11,6 +11,7 @@
 # Let's use a repeating Timer for counting FPS
 import cv2
 import threading
+import logging
 
 class RepeatTimer(threading.Timer):
     def run(self):
@@ -35,6 +36,7 @@ class CSI_Camera:
         self.frames_displayed=0
         self.last_frames_read=0
         self.last_frames_displayed=0
+        logging.basicConfig(level=logging.INFO)
 
 
     def open(self, gstreamer_pipeline_string):
@@ -45,15 +47,15 @@ class CSI_Camera:
             
         except RuntimeError:
             self.video_capture = None
-            print("Unable to open camera")
-            print("Pipeline: " + gstreamer_pipeline_string)
+            logging.error("Unable to open camera")
+            logging.error("Pipeline: " + gstreamer_pipeline_string)
             return
         # Grab the first frame to start the video capturing
         self.grabbed, self.frame = self.video_capture.read()
 
     def start(self):
         if self.running:
-            print('Video capturing is already running')
+            logging.warning('Video capturing is already running')
             return None
         # create a thread to read the camera image
         if self.video_capture != None:
@@ -65,6 +67,7 @@ class CSI_Camera:
     def stop(self):
         self.running=False
         self.read_thread.join()
+        logging.info("Camera Stopped...[OK]")
 
     def updateCamera(self):
         # This is the thread to read images from the camera
@@ -76,7 +79,7 @@ class CSI_Camera:
                     self.frame=frame
                     self.frames_read += 1
             except RuntimeError:
-                print("Could not read image from camera")
+                logging.error("Could not read image from camera")
         # FIX ME - stop and cleanup thread
         # Something bad happened
         

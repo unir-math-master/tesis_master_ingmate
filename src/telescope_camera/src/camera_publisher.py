@@ -5,6 +5,7 @@ from cv_bridge import CvBridge, CvBridgeError
 import cv2
 from csi_camera import CSI_Camera
 
+
 def node():
     rospy.init_node("camera_node_publisher")
     cvbridge = CvBridge()

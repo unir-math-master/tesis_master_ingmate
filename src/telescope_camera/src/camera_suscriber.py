@@ -13,7 +13,7 @@ def callback(data):
     except CvBridgeError as e:
         print(e)
 
-    cv2.imshow("Image window", cv_image)
+    cv2.imshow("Telescope Stream", cv_image)
     cv2.waitKey(3)
 
 

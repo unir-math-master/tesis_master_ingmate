@@ -17,7 +17,7 @@ def node():
     rospy.loginfo("Camera  [OK]")
 
     publisher = rospy.Publisher('cameraimg', Image, queue_size=10)
-    ros_rate = rospy.Rate(3)
+    ros_rate = rospy.Rate(5)
 
     while not rospy.is_shutdown():
         _, frame = camera.read()

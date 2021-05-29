@@ -1,0 +1,9 @@
+#Database
+user: ""
+password: ""
+host: "127.0.0.1"
+port: 3306
+database: "unir_ingmate"
+
+#Telescope
+telescope: "Celestron Astromaster 70AZ"

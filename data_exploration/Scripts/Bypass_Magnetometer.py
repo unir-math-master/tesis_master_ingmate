@@ -1,4 +1,0 @@
-import smbus
-bus = smbus.SMBus(1)
-bus.write_byte_data(0x68, 0x37, 0x02)
-bus.write_byte_data(0x68, 0x6A, 0x00)

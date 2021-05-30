@@ -1,22 +1,38 @@
 CREATE SCHEMA unir_ingmate;
 
-CREATE TABLE unir_ingmate.test ( 
+CREATE TABLE unir_ingmate.api_catalog ( 
 	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	name                 varchar(100)  NOT NULL    ,
+	description          varchar(500)   ,
+	CONSTRAINT unq_api_api UNIQUE ( name )   
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.sensor_catalog ( 
+	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	code                 varchar(100)  NOT NULL    ,
+	description          varchar(500)   ,
+	CONSTRAINT unq_sen_cat UNIQUE ( code )    
+ ) engine=InnoDB;
+
+CREATE TABLE unir_ingmate.tbl ( 
+ );
+
+CREATE TABLE unir_ingmate.test ( 
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	telescope            varchar(30)      ,
 	tracking_object      varchar(100)      ,
 	created_at           timestamp      
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.api ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_test              int UNSIGNED     ,
-	name                 varchar(50)  NOT NULL    ,
-	CONSTRAINT unq_api_api UNIQUE ( name ) 
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int      ,
+	id_api_catalog       int UNSIGNED NOT NULL    
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.data ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_api               int UNSIGNED     ,
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_api               int      ,
 	azimuth              varchar(20)  NOT NULL    ,
 	elevation            varchar(20)  NOT NULL    ,
 	`type`               enum('real', 'geometric')      ,
@@ -24,8 +40,8 @@ CREATE TABLE unir_ingmate.data (
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.image ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_test              int UNSIGNED     ,
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int      ,
 	name                 varchar(100)  NOT NULL    ,
 	route                varchar(200)  NOT NULL    ,
 	width                int  NOT NULL    ,
@@ -36,9 +52,9 @@ CREATE TABLE unir_ingmate.image (
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.position ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_test              int UNSIGNED     ,
-	`type`               enum('gps','e_api')  NOT NULL    ,
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int      ,
+	`type`               enum('gps', 'e_api')  NOT NULL    ,
 	sat_number           varchar(3)      ,
 	latitude             varchar(20)  NOT NULL    ,
 	longitude            varchar(20)  NOT NULL    ,
@@ -47,33 +63,35 @@ CREATE TABLE unir_ingmate.position (
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.sensor ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_test              int UNSIGNED     ,
-	code                 varchar(50)  NOT NULL    
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int      ,
+	id_sensor_catalog    int UNSIGNED NOT NULL    
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.steps ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_test              int UNSIGNED     ,
-	axis                 enum('azimuth','elevation')  NOT NULL    
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_test              int      ,
+	axis                 enum('azimuth', 'elevation')  NOT NULL    
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.value ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_sensor            int UNSIGNED NOT NULL    ,
-	axis                 varchar(1)      ,
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_sensor            int  NOT NULL    ,
+	axis                 varchar(10)      ,
 	medition             varchar(15)  NOT NULL    ,
 	created_at           timestamp      
  ) engine=InnoDB;
 
 CREATE TABLE unir_ingmate.number_of_steps ( 
-	id                   int UNSIGNED NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	id_steps             int UNSIGNED     ,
+	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
+	id_steps             int      ,
 	step                 int      ,
 	created_at           timestamp      
  ) engine=InnoDB;
 
 ALTER TABLE unir_ingmate.api ADD CONSTRAINT fk_api_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.api ADD CONSTRAINT fk_api_api_catalog FOREIGN KEY ( id_api_catalog ) REFERENCES unir_ingmate.api_catalog( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE unir_ingmate.data ADD CONSTRAINT fk_data_api FOREIGN KEY ( id_api ) REFERENCES unir_ingmate.api( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -84,6 +102,8 @@ ALTER TABLE unir_ingmate.number_of_steps ADD CONSTRAINT fk_number_of_steps_steps
 ALTER TABLE unir_ingmate.position ADD CONSTRAINT fk_position_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE unir_ingmate.sensor ADD CONSTRAINT fk_sensor_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE unir_ingmate.sensor ADD CONSTRAINT fk_sensor_sensor_catalog FOREIGN KEY ( id_sensor_catalog ) REFERENCES unir_ingmate.sensor_catalog( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE unir_ingmate.steps ADD CONSTRAINT fk_steps_test FOREIGN KEY ( id_test ) REFERENCES unir_ingmate.test( id ) ON DELETE NO ACTION ON UPDATE NO ACTION;
 

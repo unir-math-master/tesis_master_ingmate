@@ -3,10 +3,11 @@
 
 ## Getting Started
 
-## Deployment
-
+## Hardware
+* Jetson Nano
 ## Built With
-
+* ROS
+* Python
 ## Contributing
 
 
@@ -19,7 +20,6 @@ For the versions available, see the [tags on this repository](https://github.com
 * **Jorge Balsells** - [GitHub](https://github.com/JBalsells)
 * **Erick Díaz** - [GitHub](https://github.com/ErickDiaz)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 <!--- ## License -->
 

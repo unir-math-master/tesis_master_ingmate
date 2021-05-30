@@ -1,0 +1,5 @@
+serial_port : "/dev/ttyUSB0"
+# Number of mesajes in the queue
+queue_size : 10
+# Rate en Hz for ros
+ros_rate : 3

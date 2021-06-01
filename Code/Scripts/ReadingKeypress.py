@@ -10,7 +10,8 @@ Elevation_EnablePin = 15
 Elevation_StepPin = 16
 Elevation_DirectionPin = 18
 
-TimeSleep = 0.05
+#TimeSleep = 0.05
+TimeSleep = 0.005
 SetMode = GPIO.BOARD
 
 text = ''

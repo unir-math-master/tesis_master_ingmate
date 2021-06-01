@@ -15,6 +15,7 @@ Stlm = {    "above_horizon":'',
             "altitude_geometric":'',
             "azimuth":'',
             "azimuth_geometric":'',
+            "localized_name": '',
             "type":'',
             "index":'',
         }
@@ -22,14 +23,9 @@ Stlm = {    "above_horizon":'',
 i = 0
 
 #Variables
-satellite = 'moon'
+satellite = data['satellite']
 
 def Data_Streamming():
-    global i
-
-    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client.connect((HOST, PORT))
-
     content = http.request("http://%s:%s/api/objects/info?name=%s&format=%s"
         %(data['api_host'], str(data['api_port']), satellite, data['format']), method="GET")[1]
     get_data = content.decode()
@@ -40,33 +36,56 @@ def Data_Streamming():
     Stlm['altitude_geometric'] = json_st['altitude-geometric']
     Stlm['azimuth'] = json_st['azimuth']
     Stlm['azimuth_geometric'] = json_st['azimuth-geometric']
+    Stlm['localized_name'] = json_st['localized-name']
     Stlm['type'] = json_st['type']
     Stlm['index'] = i
     st = json.dumps(Stlm)
 
-    client.send(st.encode())
-    from_server = client.recv(255)
-    client.close()
-    print(from_server.decode())
+    return st
 
-    i = i+1
-
-def Stellarium_Calibration():
-    body = {'latitude': '14.00',
-            'longitude': '-90.00',
-            'altitude': '1500',
-            'name': 'earth',
-            'country': 'guatemala',
-            'planet': 'earth'
+def Stellarium_Calibration(lat,lon,alt):
+    body = {'id':data['id'],
+            'latitude': lat,
+            'longitude': lon,
+            'altitude': alt,
+            'name': data['name'],
+            'country': data['country'],
+            'planet': data['planet']
             }
     url = "http://localhost:8090/api/location/setlocationfields"
     content = http.request(url, method="POST", headers={'Content-type': 'application/x-www-form-urlencoded'},
                        body=urllib.parse.urlencode(body))[1]
     return content
+
+def Stellarium_Status():
+    url = "http://localhost:8090/api/main/status"
+    content = http.request(url, method="GET")[1]
+    return content
+
+
 try:
-    print(Stellarium_Calibration())
+    print(Stellarium_Calibration('14.64072', '-90.51327', '1508'))
+    print(Stellarium_Status())
+
+    text1=''
+    text2=''
+
     while True:
-        Data_Streamming()
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect((HOST, PORT))
+
+        st = Data_Streamming()
+
+        client.send(st.encode())
+        from_server = client.recv(255)
+        client.close()
+        text1 = from_server.decode()
+
+        if(text1!=text2):
+            print(text1)
+            text2=text1
+
+        i = i+1
 
 except KeyboardInterrupt:
     http.close()

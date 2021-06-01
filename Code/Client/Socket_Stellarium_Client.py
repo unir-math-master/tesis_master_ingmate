@@ -51,22 +51,30 @@ def Data_Streamming():
 
     i = i+1
 
-def Stellarium_Calibration():
-    body = {'latitude': '14.00',
-            'longitude': '-90.00',
-            'altitude': '1500',
-            'name': 'earth',
-            'country': 'guatemala',
-            'planet': 'earth'
+def Stellarium_Calibration(lat,lon,alt):
+    body = {'id':data['id'],
+            'latitude': lat,
+            'longitude': lon,
+            'altitude': alt,
+            'name': data['name'],
+            'country': data['country'],
+            'planet': data['planet']
             }
     url = "http://localhost:8090/api/location/setlocationfields"
     content = http.request(url, method="POST", headers={'Content-type': 'application/x-www-form-urlencoded'},
                        body=urllib.parse.urlencode(body))[1]
     return content
+
+def Stellarium_Status():
+    url = "http://localhost:8090/api/main/status"
+    content = http.request(url, method="GET")[1]
+    return content
+
 try:
-    print(Stellarium_Calibration())
-    while True:
-        Data_Streamming()
+    print(Stellarium_Calibration('14.64072', '-90.51327', '1508'))
+    print(Stellarium_Status())
+    #while True:
+        #Data_Streamming()
 
 except KeyboardInterrupt:
     http.close()

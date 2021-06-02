@@ -1,6 +1,6 @@
 #Jetson Server Parameters
 server_host: '192.168.0.9'
-server_port: 15554
+server_port: 15555
 
 #Stellarium API Parameters
 api_host: 'localhost'
@@ -14,4 +14,4 @@ country: 'Guatemala'
 planet: 'Earth'
 
 #Stellarium Satellite Search
-satellite: 'moon'
+satellite: 'sargas'

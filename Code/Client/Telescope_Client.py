@@ -83,7 +83,7 @@ try:
 
         if(text1!=text2):
             print(text1)
-            text2=text1
+            text2=text1;
 
         i = i+1
 

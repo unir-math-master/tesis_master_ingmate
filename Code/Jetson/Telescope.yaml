@@ -1,6 +1,6 @@
 #----------Socket information----------
 ip: ''
-sk_port: 15554
+sk_port: 15555
 
 #----------Motors Movement----------
 #Coordinates Configuration
@@ -26,3 +26,5 @@ database: "unir_ingmate"
 
 #Telescope
 telescope: "Celestron Astromaster 70AZ"
+Api_REST: "Stellarium"
+satellite: "moon"

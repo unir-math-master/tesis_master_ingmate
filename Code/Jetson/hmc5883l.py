@@ -1,4 +1,4 @@
-import smbus, math, argparse
+import smbus, math
 
 bus = smbus.SMBus(1)
 
@@ -30,6 +30,6 @@ while True:
 
     Angle = math.atan2(yMag,xMag)
     Angle = math.degrees(Angle)
-    Angle = Angle - Declination
+    #Angle = Angle - Declination
 
     print(Angle)

@@ -33,8 +33,8 @@ CREATE TABLE unir_ingmate.api (
 CREATE TABLE unir_ingmate.data ( 
 	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	id_api               int      ,
-	azimuth              varchar(20)  NOT NULL    ,
-	elevation            varchar(20)  NOT NULL    ,
+	azimuth              varchar(50)  NOT NULL    ,
+	elevation            varchar(50)  NOT NULL    ,
 	`type`               enum('real', 'geometric')      ,
 	created_at           timestamp      
  ) engine=InnoDB;

@@ -54,10 +54,185 @@ dvr8825_mode = {'000':1, '100':1/2, '010':1/4, '110':1/8, '001':1/16, '101':1/32
 TimeSleep = 0.001
 Above_Horizon = False
 
-Az_Reference_Angle = 120
-El_Reference_Angle = 20
+Az_Reference_Angle = 180
+El_Reference_Angle = 0
 Az_Setpoint_Angle = 0
 El_Setpoint_Angle = 0
+
+satellite = data['satellite']
+Api_REST = data['Api_REST']
+
+class Database():
+    def __init__(self):
+        self.id_test = 0
+        self.id_api_catalog = 0
+        self.id_api = 0
+
+        self.id_MPU6050 = 0
+        self.id_HMC5883L = 0
+        self.id_BMP180 = 0
+        self.id_MPU6050_sensor = 0
+        self.id_HMC5883L_sensor = 0
+        self.id_BMP180_sensor = 0
+
+        self.id_steps_azimuth = 0
+        self.id_steps_elevation = 0
+
+        #Catalogo api REST
+        sql = "INSERT IGNORE INTO "+data['database']+".api_catalog VALUES(%s,%s,%s)"
+
+        val = ("NULL", "Stellarium", "http://stellarium.org/")
+        cursor.execute(sql,val)
+        val = ("", "NASA", "http://nasa.gob")
+        cursor.execute(sql,val)
+
+        #catalogo sensores
+        sql = "INSERT IGNORE INTO sensor_catalog VALUES(%s,%s,%s)"
+
+        val = ("NULL", "MPU6050", "Inertial sensor")
+        cursor.execute(sql,val)
+        val = ("NULL", "HMC5883L", "Magnetometer")
+        cursor.execute(sql,val)
+        val = ("NULL", "BMP180", "Barometer")
+        cursor.execute(sql,val)
+
+        ingmate_bdd.commit()
+        self.test()
+        self.api()
+        self.sensor()
+        self.steps()
+
+    def test(self):
+        #Ingreso una unica vez
+        sql = "INSERT INTO "+data['database']+".test VALUES(%s,%s,%s,%s)"
+        val = ( "NULL", 
+                data['telescope'],
+                satellite,
+                time.strftime('%Y-%m-%d %H:%M:%S')
+            )
+        cursor.execute(sql,val)
+        ingmate_bdd.commit()
+        self.id_test = cursor.lastrowid
+
+        print("Test No. %s" %self.id_test) 
+
+        #Seleccionar ID Catalogos
+        cursor.execute("SELECT api_catalog.id FROM api_catalog WHERE name LIKE '%s'" % Api_REST)
+        self.id_api_catalog = cursor.fetchone()[0]
+
+        cursor.execute("SELECT sensor_catalog.code,sensor_catalog.id FROM sensor_catalog")
+        sensor_catalog = cursor.fetchall()
+
+        for i in range(0,len(sensor_catalog)):
+            if sensor_catalog[i][0] == 'MPU6050':
+                self.id_MPU6050 = sensor_catalog[i][1]
+            elif sensor_catalog[i][0] == 'HMC5883L':
+                self.id_HMC5883L = sensor_catalog[i][1]
+            elif sensor_catalog[i][0] == 'BMP180':
+                self.id_BMP180 = sensor_catalog[i][1]
+
+    def position(self,pos_type,sat_number,latitude,longitude,altitude):
+        sql = "INSERT INTO "+data['database']+".position VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
+        val = ( "NULL",
+                str(self.id_test),
+                pos_type,
+                str(sat_number),
+                str(latitude),
+                str(longitude),
+                str(altitude),
+                time.strftime('%Y-%m-%d %H:%M:%S')
+            )
+        cursor.execute(sql,val)
+        ingmate_bdd.commit()
+
+    def api(self):
+        sql = "INSERT INTO "+data['database']+".api VALUES(%s,%s,%s)"
+        val = ( "NULL", 
+                str(self.id_test), 
+                self.id_api_catalog
+            )
+        cursor.execute(sql,val)
+        ingmate_bdd.commit()
+        self.id_api = cursor.lastrowid
+
+    def data(self,azm,elv,tp_api):
+        sql = "INSERT INTO "+data['database']+".data VALUES(%s,%s,%s,%s,%s,%s)"
+        val = ( "NULL", 
+                str(self.id_api),
+                str(round(azm,15)),
+                str(round(elv,15)),
+                str(tp_api),
+                time.strftime('%Y-%m-%d %H:%M:%S')
+            )
+
+        cursor.execute(sql, val)
+        ingmate_bdd.commit()
+
+    def sensor(self):
+        sql = "INSERT INTO "+data['database']+".sensor VALUES (%s,%s,%s)"
+
+        val = ( "NULL", str(self.id_test), str(self.id_MPU6050))
+        cursor.execute(sql,val)
+        self.id_MPU6050_sensor = cursor.lastrowid
+
+        val = ( "NULL", str(self.id_test), str(self.id_HMC5883L))
+        cursor.execute(sql,val)
+        self.id_HMC5883L_sensor = cursor.lastrowid
+
+        val = ( "NULL", str(self.id_test), str(self.id_BMP180))
+        cursor.execute(sql,val)
+        self.id_BMP180_sensor = cursor.lastrowid
+
+        ingmate_bdd.commit()
+
+    def value(self,MPU6050_Dic,HMC5883L_Dic,BMP180_Dic): 
+        sql = "INSERT INTO "+data['database']+".value VALUES(%s,%s,%s,%s,%s)"
+
+        for KeyAxis in MPU6050_Dic:
+            val = ( "NULL", 
+                    str(self.id_MPU6050_sensor),
+                    KeyAxis,
+                    str(MPU6050_Dic[KeyAxis]),
+                    time.strftime('%Y-%m-%d %H:%M:%S')
+                )
+            cursor.execute(sql,val)
+
+        for KeyAxis in HMC5883L_Dic:
+            val = ( "NULL", 
+                    str(self.id_HMC5883L_sensor),
+                    KeyAxis,
+                    str(HMC5883L_Dic[KeyAxis]),
+                    time.strftime('%Y-%m-%d %H:%M:%S')
+                )
+            cursor.execute(sql,val)
+
+        for KeyAxis in BMP180_Dic:
+            val = ( "NULL", 
+                    str(self.id_BMP180_sensor),
+                    KeyAxis,
+                    str(BMP180_Dic[KeyAxis]),
+                    time.strftime('%Y-%m-%d %H:%M:%S')
+                )
+            cursor.execute(sql,val)
+
+        ingmate_bdd.commit()
+
+
+    def steps(self):
+        sql = "INSERT INTO "+data['database']+".steps VALUES(%s,%s,%s)"
+
+        val = ( "NULL", str(self.id_test), 'azimuth')
+        cursor.execute(sql,val)
+        self.id_steps_azimuth = cursor.lastrowid
+
+        val = ( "NULL", str(self.id_test), 'elevation')
+        cursor.execute(sql,val)
+        self.id_steps_elevation = cursor.lastrowid
+
+        ingmate_bdd.commit()
+
+    def number_of_steps(self,Type_St,St):
+        pass
 
 class Sensors(Thread):
     def __init__(self):
@@ -73,15 +248,15 @@ class Sensors(Thread):
         self.Angle2 = 0        
 
         #Database
-        MPU6050_Dic = {
+        self.MPU6050_Dic = {
             'AngleX': 0,
             'AngleY': 0,
         }
-        HMC5883L_Dic = {
+        self.HMC5883L_Dic = {
             'AngleZ':0,
         }
 
-        BMP180_Dic = {
+        self.BMP180_Dic = {
             'Alt': 0,
         }
 
@@ -117,10 +292,11 @@ class Sensors(Thread):
 
         try:
             while True:
-                altitude_bmp180 = self.BMP180()
-                angleX_mpu6050, angleY_mpu6050 = self.MPU6050()
-                angleZ_hmc5883l = self.HMC5883L()
-                print(angle_mpu6050) 
+                self.BMP180_Dic['Alt'] = self.BMP180()
+                self.MPU6050_Dic['AngleX'], self.MPU6050_Dic['AngleY'] = self.MPU6050()
+                self.HMC5883L_Dic['AngleZ'] = self.HMC5883L()
+
+                DataB.value(self.MPU6050_Dic,self.HMC5883L_Dic,self.BMP180_Dic)
         except KeyboardInterrupt:
             print("Saliendo de rutina de sensores")
 
@@ -222,7 +398,7 @@ class Coordinates(Thread):
         elif(self.Nema_Steps==self.Nema_Setpoint_Steps):
             #print("objetivo centrado")
             pass
-
+        
         print(self.name + ", setpoint: " + str(self.Nema_Setpoint_Steps)+", var: "+str(self.Nema_Steps))
 
 if __name__ == '__main__':
@@ -230,50 +406,56 @@ if __name__ == '__main__':
     Elev_Process = Coordinates(Coord_2, El_Mode, Elev_DirectionPin, Elev_StepPin, Elev_EnablePin)
     Sensors_Process = Sensors()
 
-    try:
-        Azim_Process.start()
-        Elev_Process.start()
-        Sensors_Process.start()
+#    try: 
+    DataB = Database()
+    time.sleep(0.5)
 
-        Azim_Process.reference(Az_Reference_Angle)
-        Elev_Process.reference(El_Reference_Angle)
+    Azim_Process.start()
+    Elev_Process.start()
+    Sensors_Process.start()
 
-        while True:
-            socket.listen(5)
-            client, address = socket.accept()
+    Azim_Process.reference(Az_Reference_Angle)
+    Elev_Process.reference(El_Reference_Angle)
 
-            response = client.recv(255)
-            if response != "":
-                    stellarium_js = response.decode()
-                    stellarium_js = json.loads(stellarium_js)
+    while True:
+        socket.listen(5)
+        client, address = socket.accept()
 
-                    Above_Horizon = stellarium_js['above_horizon']
-                    Az_Setpoint_Angle = stellarium_js['azimuth']
-                    El_Setpoint_Angle = stellarium_js['altitude']
+        response = client.recv(255)
+        if response != "":
+                stellarium_js = response.decode()
+                stellarium_js = json.loads(stellarium_js)
 
-            #Movimiento de telescopio
-            if(Above_Horizon!=False):
-                Azim_Process.setpoint(Az_Setpoint_Angle)
-                Elev_Process.setpoint(El_Setpoint_Angle)
+                Above_Horizon = stellarium_js['above_horizon']
+                Az_Setpoint_Angle = stellarium_js['azimuth']
+                El_Setpoint_Angle = stellarium_js['altitude']
 
-                Azim_Process.main(TimeSleep)
-                Elev_Process.main(TimeSleep)
+                #DataB.data(Az_Setpoint_Angle,El_Setpoint_Angle,'real')
+                
+        #Movimiento de telescopio
+        if(Above_Horizon!=False):
+            Azim_Process.setpoint(Az_Setpoint_Angle)
+            Elev_Process.setpoint(El_Setpoint_Angle)
 
-                text = str(stellarium_js['localized_name'] +"->"+ stellarium_js['type'])
-            else:
-                text = "No es posible visualizar " + str(stellarium_js['localized_name']) + ", se encuentra debajo del horizonte."
+            Azim_Process.main(TimeSleep)
+            Elev_Process.main(TimeSleep)
 
-            st = "Recibiendo paquetes, " + text
-            message = st.encode()        
-            client.send(message)  
+            text = str(stellarium_js['localized_name'] +"->"+ stellarium_js['type'])
+        else:
+            text = "No es posible visualizar " + str(stellarium_js['localized_name']) + ", se encuentra debajo del horizonte."
+            #print(text)
 
-    except KeyboardInterrupt:
-        print("Saliendo del controlador de motor")
+        st = "Recibiendo paquetes, " + text
+        message = st.encode()        
+        client.send(message)  
 
-    except Exception as exception_error:
-        print("Error: " + str(exception_error))
+#    except KeyboardInterrupt:
+#        print("Saliendo del controlador de motor")
+
+#    except Exception as exception_error:
+#        print("Error: " + str(exception_error))
     
-    finally:
-        GPIO.cleanup()
-        client.close()
-        stock.close()
+#    finally:
+#        GPIO.cleanup()
+#        client.close()
+#        socket.close()

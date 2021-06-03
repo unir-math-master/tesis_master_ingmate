@@ -6,7 +6,7 @@ import math
 
 plt.style.use('ggplot')
 
-HOST = '192.168.0.16'
+HOST = '192.168.0.9'
 PORT = 15556
 
 i = 0
@@ -29,7 +29,6 @@ while True:
 
     data = from_server.decode()
     data = data.split(',')
-    #print(data)
 
     Accel1 = math.degrees(math.atan( -1 * (float(data[0]) / Accel_Range) / math.sqrt(math.pow( (float(data[1]) / Accel_Range), 2) + math.pow( (float(data[2]) / Accel_Range), 2))))
     Accel2 = math.degrees(math.atan(      (float(data[1]) / Accel_Range) / math.sqrt(math.pow( (float(data[0]) / Accel_Range), 2) + math.pow( (float(data[2]) / Accel_Range), 2))))
@@ -38,6 +37,8 @@ while True:
     Angle1 = 0.99*(Angle1 + Gyro1*0.0010) + 0.01*Accel2
     Angle2 = 0.99*(Angle2 + Gyro2*0.0010) + 0.01*Accel1
 
-    print('Elevation:' + str(round(Angle1,10)))
+    print(Angle1)
+
+    #print('Elevation:' + str(round(Angle1,10)))
 
     i = i+1

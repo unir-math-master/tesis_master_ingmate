@@ -33,8 +33,8 @@ CREATE TABLE unir_ingmate.api (
 CREATE TABLE unir_ingmate.data ( 
 	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
 	id_api               int      ,
-	azimuth              varchar(20)  NOT NULL    ,
-	elevation            varchar(20)  NOT NULL    ,
+	azimuth              varchar(50)  NOT NULL    ,
+	elevation            varchar(50)  NOT NULL    ,
 	`type`               enum('real', 'geometric')      ,
 	created_at           timestamp      
  ) engine=InnoDB;
@@ -79,6 +79,7 @@ CREATE TABLE unir_ingmate.value (
 	id_sensor            int  NOT NULL    ,
 	axis                 varchar(10)      ,
 	medition             varchar(15)  NOT NULL    ,
+	status_val           enum('in_transit', 'in_site') NOT NULL,
 	created_at           timestamp      
  ) engine=InnoDB;
 

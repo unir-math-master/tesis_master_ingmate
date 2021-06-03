@@ -1,0 +1,17 @@
+#Jetson Server Parameters
+server_host: '192.168.0.9'
+server_port: 15557
+
+#Stellarium API Parameters
+api_host: 'localhost'
+api_port: 8090
+format: 'json'
+
+#Stellarium calibration
+id: ''
+name: 'Guatemala City'
+country: 'Guatemala'
+planet: 'Earth'
+
+#Stellarium Satellite Search
+satellite: 'gacrux'

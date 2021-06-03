@@ -1,0 +1,17 @@
+#----------Socket information----------
+ip: ''
+port: 15554
+
+#----------Motors Movement----------
+#Coordinates Configuration
+Coordinate_1: 'Azimuth'
+Coordinate_2: 'Elevation'
+#DVR8825 Configuration
+Azimuth_Mode: '111'
+Elevation_Mode: '111'
+Azim_EnablePin: 11
+Azim_StepPin: 12
+Azim_DirectionPin: 13
+Elev_EnablePin: 15
+Elev_StepPin: 16
+Elev_DirectionPin: 18

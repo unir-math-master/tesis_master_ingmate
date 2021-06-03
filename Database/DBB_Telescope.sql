@@ -79,6 +79,7 @@ CREATE TABLE unir_ingmate.value (
 	id_sensor            int  NOT NULL    ,
 	axis                 varchar(10)      ,
 	medition             varchar(15)  NOT NULL    ,
+	status_val           enum('in_transit', 'in_site') NOT NULL,
 	created_at           timestamp      
  ) engine=InnoDB;
 

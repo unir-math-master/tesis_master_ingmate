@@ -23,15 +23,6 @@ ingmate_bdd = mysql.connector.connect(
     )
 cursor = ingmate_bdd.cursor()
 
-ingmate_bdd_value = mysql.connector.connect(
-    user=data['user'], 
-    password=data['password'], 
-    host=data['host'], 
-    port=data['db_port'],
-    database=data['database']
-    )
-cursor_value = ingmate_bdd_value.cursor()
-
 #Motors movement
 Azim_EnablePin = data['Azim_EnablePin']
 Azim_StepPin = data['Azim_StepPin']
@@ -70,8 +61,6 @@ El_Setpoint_Angle = 0
 
 satellite = data['satellite']
 Api_REST = data['Api_REST']
-
-status_val = "in_transit"
 
 class Database():
     def __init__(self):
@@ -175,6 +164,7 @@ class Database():
                 str(tp_api),
                 time.strftime('%Y-%m-%d %H:%M:%S')
             )
+
         cursor.execute(sql, val)
         ingmate_bdd.commit()
 
@@ -195,6 +185,39 @@ class Database():
 
         ingmate_bdd.commit()
 
+    def value(self,MPU6050_Dic,HMC5883L_Dic,BMP180_Dic): 
+        sql = "INSERT INTO "+data['database']+".value VALUES(%s,%s,%s,%s,%s)"
+
+        for KeyAxis in MPU6050_Dic:
+            val = ( "NULL", 
+                    str(self.id_MPU6050_sensor),
+                    KeyAxis,
+                    str(MPU6050_Dic[KeyAxis]),
+                    time.strftime('%Y-%m-%d %H:%M:%S')
+                )
+            cursor.execute(sql,val)
+
+        for KeyAxis in HMC5883L_Dic:
+            val = ( "NULL", 
+                    str(self.id_HMC5883L_sensor),
+                    KeyAxis,
+                    str(HMC5883L_Dic[KeyAxis]),
+                    time.strftime('%Y-%m-%d %H:%M:%S')
+                )
+            cursor.execute(sql,val)
+
+        for KeyAxis in BMP180_Dic:
+            val = ( "NULL", 
+                    str(self.id_BMP180_sensor),
+                    KeyAxis,
+                    str(BMP180_Dic[KeyAxis]),
+                    time.strftime('%Y-%m-%d %H:%M:%S')
+                )
+            cursor.execute(sql,val)
+
+        ingmate_bdd.commit()
+
+
     def steps(self):
         sql = "INSERT INTO "+data['database']+".steps VALUES(%s,%s,%s)"
 
@@ -210,47 +233,6 @@ class Database():
 
     def number_of_steps(self,Type_St,St):
         pass
-
-class Database_value():
-    def __init__(self, id_MPU6050_sensor, id_HMC5883L_sensor, id_BMP180_sensor):
-        self.id_MPU6050_sensor = id_MPU6050_sensor
-        self.id_HMC5883L_sensor = id_HMC5883L_sensor
-        self.id_BMP180_sensor = id_BMP180_sensor
-
-    def value(self,MPU6050_Dic,HMC5883L_Dic,BMP180_Dic, Status_val): 
-        sql = "INSERT INTO "+data['database']+".value VALUES(%s,%s,%s,%s,%s,%s)"
-
-        for KeyAxis in MPU6050_Dic:
-            val = ( "NULL", 
-                    str(self.id_MPU6050_sensor),
-                    KeyAxis,
-                    str(MPU6050_Dic[KeyAxis]),
-                    Status_val,
-                    time.strftime('%Y-%m-%d %H:%M:%S')
-                )
-            cursor_value.execute(sql,val)
-
-        for KeyAxis in HMC5883L_Dic:
-            val = ( "NULL", 
-                    str(self.id_HMC5883L_sensor),
-                    KeyAxis,
-                    str(HMC5883L_Dic[KeyAxis]),
-                    Status_val,
-                    time.strftime('%Y-%m-%d %H:%M:%S')
-                )
-            cursor_value.execute(sql,val)
-
-        for KeyAxis in BMP180_Dic:
-            val = ( "NULL", 
-                    str(self.id_BMP180_sensor),
-                    KeyAxis,
-                    str(BMP180_Dic[KeyAxis]),
-                    Status_val,
-                    time.strftime('%Y-%m-%d %H:%M:%S')
-                )
-            cursor_value.execute(sql,val)
-
-        ingmate_bdd_value.commit()
 
 class Sensors(Thread):
     def __init__(self):
@@ -279,8 +261,6 @@ class Sensors(Thread):
         }
 
     def run(self):
-        global status_val
-
         #inicializando bmp180
         print("Inicializando BMP180")
         self.bmp = bmp180(self.bmp180_dir)
@@ -316,7 +296,7 @@ class Sensors(Thread):
                 self.MPU6050_Dic['AngleX'], self.MPU6050_Dic['AngleY'] = self.MPU6050()
                 self.HMC5883L_Dic['AngleZ'] = self.HMC5883L()
 
-                DataB_V.value(self.MPU6050_Dic,self.HMC5883L_Dic,self.BMP180_Dic,status_val)
+                DataB.value(self.MPU6050_Dic,self.HMC5883L_Dic,self.BMP180_Dic)
         except KeyboardInterrupt:
             print("Saliendo de rutina de sensores")
 
@@ -379,7 +359,6 @@ class Coordinates(Thread):
         self.enable_pin = enable_pin
         self.Nema_Steps = 0
         self.Nema_Setpoint_Steps = 0
-        self.status_val = 'in_transit'
 
     def run(self):
         print("%s DVR8825 Mode: %s" %(self.name,self.mode))
@@ -405,6 +384,7 @@ class Coordinates(Thread):
         pass
 
     def main(self, TS):
+
         if(self.Nema_Steps>self.Nema_Setpoint_Steps):
             GPIO.output(self.dir_pin, GPIO.LOW)
             self.step(TS)
@@ -417,8 +397,8 @@ class Coordinates(Thread):
 
         elif(self.Nema_Steps==self.Nema_Setpoint_Steps):
             #print("objetivo centrado")
-            self.status_val = "in_site"
             pass
+        
         print(self.name + ", setpoint: " + str(self.Nema_Setpoint_Steps)+", var: "+str(self.Nema_Steps))
 
 if __name__ == '__main__':
@@ -428,7 +408,6 @@ if __name__ == '__main__':
 
 #    try: 
     DataB = Database()
-    DataB_V = Database_value(DataB.id_MPU6050_sensor, DataB.id_HMC5883L_sensor, DataB.id_BMP180_sensor)
     time.sleep(0.5)
 
     Azim_Process.start()
@@ -444,15 +423,15 @@ if __name__ == '__main__':
 
         response = client.recv(255)
         if response != "":
-            stellarium_js = response.decode()
-            stellarium_js = json.loads(stellarium_js)
+                stellarium_js = response.decode()
+                stellarium_js = json.loads(stellarium_js)
 
-            Above_Horizon = stellarium_js['above_horizon']
-            Az_Setpoint_Angle = stellarium_js['azimuth']
-            El_Setpoint_Angle = stellarium_js['altitude']
+                Above_Horizon = stellarium_js['above_horizon']
+                Az_Setpoint_Angle = stellarium_js['azimuth']
+                El_Setpoint_Angle = stellarium_js['altitude']
 
-            DataB.data(Az_Setpoint_Angle,El_Setpoint_Angle,'real')
-            print(status_val)
+                #DataB.data(Az_Setpoint_Angle,El_Setpoint_Angle,'real')
+                
         #Movimiento de telescopio
         if(Above_Horizon!=False):
             Azim_Process.setpoint(Az_Setpoint_Angle)
@@ -460,9 +439,6 @@ if __name__ == '__main__':
 
             Azim_Process.main(TimeSleep)
             Elev_Process.main(TimeSleep)
-
-            if(Azim_Process.status_val=='in_site' and Elev_Process.status_val=='in_site'):
-                status_val = 'in_site'
 
             text = str(stellarium_js['localized_name'] +"->"+ stellarium_js['type'])
         else:

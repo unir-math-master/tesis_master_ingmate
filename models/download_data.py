@@ -57,7 +57,6 @@ for date in daterange(arg_init_date, arg_end_date, steps):
     print(f"Transforming data ....")
     data_eph['datetime'] = pd.to_datetime(data_eph['datetime_str'])
     data_eph['hour'] = data_eph['datetime'].dt.hour
-    data_eph['hour'] = data_eph['datetime'].dt.hour
 
     # Adding observer coordinates
     data_eph['lon'] = args.lon

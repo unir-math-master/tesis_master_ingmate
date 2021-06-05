@@ -23,7 +23,12 @@ sudo apt install python3-pip
 
 ### Install ROS
 For the Jetson nano follow these [steps](https://elinux.org/Jetson_Zoo).
- 
+
+```
+sudo apt-get install python3-rospkg
+```
+
+
 ### CircuitPython Installation of GPS Library
 
 CircuitPython initial setup gide can be found [here](https://learn.adafruit.com/circuitpython-libraries-on-linux-and-the-nvidia-jetson-nano/initial-setup).

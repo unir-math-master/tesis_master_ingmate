@@ -26,6 +26,7 @@ For the Jetson nano follow these [steps](https://elinux.org/Jetson_Zoo).
 
 ```
 sudo apt-get install python3-rospkg
+sudo apt-get install ros-$(rosversion -d)-cv-bridge
 ```
 
 

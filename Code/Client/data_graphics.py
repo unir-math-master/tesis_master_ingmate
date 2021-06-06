@@ -89,11 +89,11 @@ try:
 
     fig, ax = plt.subplots()
 
-    filt_Azim = MediaMovilFilter(Azim_Sen,30)
-    filt_Elev = MediaMovilFilter(Elev_Sen,30)
+    filt_Azim = MediaMovilFilter(Azim_Sen,100)
+    filt_Elev = MediaMovilFilter(Elev_Sen,100)
 
-    #ax.plot(Azim_Api, Elev_Api, label="Datos Stellarium")
-    ax.plot(Azim_Sen, Elev_Sen, label="Datos sensados no filtrados")
+    ax.plot(Azim_Api, Elev_Api, label="Datos Stellarium")
+    #ax.plot(Azim_Sen, Elev_Sen, label="Datos sensados no filtrados")
     ax.plot(filt_Azim, filt_Elev, label="Datos sensados filtrados")
 
     ax.set(xlabel='Azimut', ylabel='Elevacion', title='Seguimiento de coordenadas celestes.')

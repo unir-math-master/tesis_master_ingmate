@@ -1,0 +1,7 @@
+#----------DataBase----------
+#Settings
+user: "jbalsells"
+password: "12345678"
+host: "127.0.0.1"
+db_port: 3306
+database: "unir_ingmate"

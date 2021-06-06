@@ -124,16 +124,17 @@ class CSI_Camera:
         display_width=1280,
         display_height=720,
         framerate=60,
-        flip_method=0,
+        flip_method=6,
     ):
         self._gstreamer_pipeline = (
             "nvarguscamerasrc sensor-id=%d  ! "
             "video/x-raw(memory:NVMM), "
             "format=(string)NV12, framerate=(fraction)%d/1 ! "
             "nvvidconv flip-method=%d ! "
-            "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
-            "videoconvert ! "
-            "video/x-raw, format=(string)BGR ! appsink"
+            "video/x-raw, width=(int)%d, height=(int)%d ! appsink"
+            #"video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+            #"videoconvert ! "
+            #"video/x-raw, format=(string)BGR ! appsink"
             % (
                 sensor_id,
                 framerate,

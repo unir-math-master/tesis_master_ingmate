@@ -23,6 +23,7 @@ parser.add_argument('--lon', type=float)
 parser.add_argument('--alt', type=float)
 parser.add_argument('--steps', type=int, default=1)
 parser.add_argument('--data_steps')
+parser.add_argument('--name', default="")
 
 
 args = parser.parse_args()
@@ -30,7 +31,10 @@ steps = args.steps
 arg_init_date = datetime.strptime(args.init_date, '%Y-%m-%d')
 arg_end_date = datetime.strptime(args.end_date, '%Y-%m-%d')
 
-file_name = f"eph_data_{arg_init_date.strftime('%Y%m%d')}_{arg_end_date.strftime('%Y%m%d')}_{args.data_steps}.csv"
+if args.name == "":
+    file_name = f"train_eph_data_{arg_init_date.strftime('%Y%m%d')}_{arg_end_date.strftime('%Y%m%d')}_{args.data_steps}.csv"
+else:
+    file_name = args.name
 
 print(f"============ GETTING DATE FROM JPL HORIZONS ============")
 for date in daterange(arg_init_date, arg_end_date, steps):

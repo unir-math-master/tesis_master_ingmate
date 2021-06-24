@@ -20,10 +20,15 @@ commands = [
     "python3 download_data.py --init_date='2021-01-01' --end_date='2021-07-15' --lat=16.425908 --lon=-90.075304 --alt=157 --steps=10 --data_steps=798 --name='train_data_'",
     "python3 download_data.py --init_date='2021-01-01' --end_date='2021-07-15' --lat=17.200694 --lon=-89.580172 --alt=291 --steps=10 --data_steps=562 --name='train_data_'",
     "python3 download_data.py --init_date='2021-01-01' --end_date='2021-07-15' --lat=14.430869 --lon=-90.565353 --alt=1382 --steps=10 --data_steps=465 --name='train_data_'",
-    "python3 download_data.py --init_date='2021-01-01' --end_date='2021-07-15' --lat=15.269285 --lon=-90.577148 --alt=1527 --steps=10 --data_steps=159 --name='train_data_'"
+    "python3 download_data.py --init_date='2021-01-01' --end_date='2021-07-15' --lat=15.269285 --lon=-90.577148 --alt=1527 --steps=10 --data_steps=159 --name='train_data_'",
+    "python3 download_data.py --init_date='2020-08-01' --end_date='2020-12-31' --lat=15.162066 --lon=-91.432063 --alt=1912 --step=10 --data_steps=565 --name='train_data_'",
+    "python3 download_data.py --init_date='2020-08-01' --end_date='2020-12-31' --lat=15.245289 --lon=-91.933262 --alt=2794 --step=10 --data_steps=523 --name='train_data_'",
+    "python3 download_data.py --init_date='2020-08-01' --end_date='2020-12-31' --lat=15.470579 --lon=-90.209735 --alt=1403 --step=10 --data_steps=242 --name='train_data_'",
+    "python3 download_data.py --init_date='2020-08-01' --end_date='2020-12-31' --lat=15.370891 --lon=-88.976455 --alt=66 --step=10 --data_steps=365 --name='train_data_'",
+    "python3 download_data.py --init_date='2020-08-01' --end_date='2020-12-31' --lat=14.553152 --lon=-90.489329 --alt=1780 --step=10 --data_steps=423 --name='train_data_'"
 ]
 
-for index, command in enumerate(commands[0:], start=0):
+for index, command in enumerate(commands[18:], start=18):
     while True:
         try:
             subprocess.run([command+str(index)], check=True, shell=True)
